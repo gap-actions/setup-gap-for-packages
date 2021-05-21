@@ -25,7 +25,7 @@ runs:
   using: "composite"
   steps:
       - name: "Download CI scripts"
-        run:  git clone https://github.com/gap-system/pkg-ci-scripts.git
+        run:  git clone -b add-gitattributes-file https://github.com/wilfwilson/pkg-ci-scripts.git
         shell: bash
       - name: "Install dependencies"
         run: |
@@ -59,17 +59,12 @@ runs:
         shell: bash
       - name: "Compile GAP and download packages"
         run: |
-          # Handle GAP_PKGS_TO_BUILD default value
-          if [ "${{inputs.GAP_PKGS_TO_BUILD}}" = "default" ];
-          then
-            export GAP_PKGS_TO_BUILD="io profiling"
-          else
-            export GAP_PKGS_TO_BUILD="${{inputs.GAP_PKGS_TO_BUILD}}"
-          fi
-          pkg-ci-scripts/build_gap.sh
+          @ECHO ON
+          SET CHERE_INVOKING=1
+          C:\cygwin64\bin\bash -l -c "export GAP_PKGS_TO_BUILD=\"${{ inputs.GAP_PKGS_TO_BUILD }}\" && pkg-ci-scripts/build_gap.sh"
         env:
           ABI: ${{ inputs.ABI }}
           GAP_PKGS_TO_CLONE: ${{ inputs.GAP_PKGS_TO_CLONE }}
           GAPBRANCH: ${{ inputs.GAPBRANCH }}
           HPCGAP: ${{ inputs.HPCGAP }}
-        shell: bash
+        shell: cmd 
